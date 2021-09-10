@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask.json import jsonify
-from app.models.post_model import Post
+from app.models.post_model import KeyValueError, Post
 
 
 def init_app(app: Flask):
@@ -52,3 +52,5 @@ def init_app(app: Flask):
             return Post.get_by_id(id), 200
         except TypeError:
             return {'message': 'Essa publicação não existe.'}, 400
+        except KeyValueError:
+            return {'message': 'Envie os dados corretamente.'}, 400

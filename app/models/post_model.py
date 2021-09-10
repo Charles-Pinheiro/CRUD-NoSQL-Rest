@@ -1,6 +1,9 @@
 import datetime
 from pymongo import MongoClient
 
+class KeyValueError(Exception):
+    pass
+
 client = MongoClient('mongodb://localhost:27017/')
 
 db = client['kenzie']
@@ -46,5 +49,22 @@ class Post:
 
     @staticmethod
     def update_post(update_data, id):
+
+        keys = ['author', 'content', 'tags', 'title']
+
+        for key, value in update_data.items():
+
+            if key in keys:
+                if key == 'tags':
+                    if type(value) != list:
+                        raise KeyValueError
+
+                if key != 'tags':
+                    if type(value) != str:
+                        raise KeyValueError
+            else:
+                raise KeyValueError
+
         post = db.posts.find_one_and_update({'id': id}, {'$set': update_data})
         del post['_id']
+        return {'message': 'Envie os dados corretamente.'}, 400
